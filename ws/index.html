@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta http-equiv="X-UA-Compatible" content="ie=edge" />
+    <title>Document</title>
+  </head>
+  <body>
+    <div onClick = 'sengMsg()'>
+      点我发送消息
+    </div>
+  </body>
+  <script>
+    // 下面直接写WebSocket
+
+    // 只需要new一下就可以创建一个websocket的实例
+    // 我们要去连接ws协议
+    // 这里对应的端口就是服务端设置的端口号9999
+    let ws = new WebSocket('ws://localhost:9999')
+
+    // onopen是客户端与服务端建立连接后触发
+    ws.onopen = function() {
+      ws.send('哎呦，不错哦')
+    }
+
+    // onmessage是当服务端给客户端发来消息的时候触发
+    ws.onmessage = function(res) {
+      console.log(res) // 打印的是MessageEvent对象
+      // 真正的消息数据是 res.data
+      console.log(res.data)
+    }
+    sengMsg = () =>{
+      ws.send('手动发送的消息')
+    }
+  </script>
+</html>
