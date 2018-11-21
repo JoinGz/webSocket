@@ -16,6 +16,12 @@
     </style>
   </head>
   <body>
+    <h3 class="container">
+      <span onclick="join('LJ')">李健聊天室</span> &nbsp;&nbsp;
+      <span onclick="join('JAY')">杰伦聊天室</span>
+    </h3>
+    <p class="leave">
+    </p>
     <div class="container">
       <ul></ul>
       <input type="text" id="msg" /> <button>发送</button>
@@ -48,32 +54,47 @@
     socket.on('allMsg', data => {
       let li = document.createElement('li')
       li.innerHTML = `
-              <p>
-              <span class="user">${data.user}</span>
-              说：${data.createAt}<p>
-              ${data.msg}
-              `
+                  <p>
+                  <span class="user">${data.user}</span>
+                  说：${data.createAt}<p>
+                  ${data.msg}
+                  `
       chartBox.appendChild(li)
     })
     // 监听一个用户加入事件算了
     socket.on('userJoin', data => {
       let li = document.createElement('li')
       li.innerHTML = `
-              <span class="user">${data.user}</span>于${
+                  <span class="user">${data.user}</span>于${
         data.createAt
       }加入了群聊！
-              `
+                  `
       chartBox.appendChild(li)
     })
     // 做一个私聊
     let privateChat = () => {
-        chartBox.onclick = event => {
-          if (event.target.className.toLowerCase() === 'user') {
-            let value = event.target.innerHTML
-            $('#msg').value += ` @${value} `
-          }
+      chartBox.onclick = event => {
+        if (event.target.className.toLowerCase() === 'user') {
+          let value = event.target.innerHTML
+          $('#msg').value += ` @${value} `
         }
+      }
     }
     privateChat()
+    // 加入聊天室
+    let join = data => {
+      socket.emit('join', data)
+    }
+    let leave = (data) =>{
+      socket.emit('leave',data)
+    }
+    socket.on('joined',(data)=>{
+      let leaveDOM = $('.leave')
+      leaveDOM.innerHTML = `
+      <span onclick = 'leave("${data.roomName}")'>
+        离开${data.roomName}战队
+      </span>`
+    })
+    
   </script>
 </html>
