@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Document</title>
+</head>
+
+<body>
+  <script src="https://cdn.bootcdn.net/ajax/libs/socket.io/4.6.1/socket.io.js"></script>
+  <script>
+    const socket = io("http://127.0.0.1:3000", {
+      transports: ["websocket"], auth: {
+        token: "abc"
+      }
+    });
+
+
+    socket.emit('register', { success: true, client_id: 1 });
+
+    setTimeout(() => {
+      console.log(`emit message`)
+      socket.emit('message', "test message")
+      socket.emit('over', { client_id: 1 })
+    }, 2000)
+
+
+    socket.on('flash', () => {
+      console.log(`服务器要求我刷新列表`)
+    })
+
+    socket.on("disconnect", (reason) => {
+      // ...
+      console.log(`client disconnect`)
+    });
+
+    socket.on("connect_error", (err) => {
+      console.log(err.message); // prints the message associated with the error
+    });
+
+  </script>
+</body>
+
+</html>
